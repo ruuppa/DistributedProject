@@ -1,0 +1,28 @@
+Multiplayer game, small competetitive
+-Using pygame as a framework for graphics and for ease of use
+-Using tutorial as a base:
+	https://www.youtube.com/watch?v=McoDjOCb2Zo
+	
+	
+Name:
+-Dicing Against Death, or DAD
+	
+Goal:
+-Multiplayer game
+-3 players compete together to see who is the winner
+	
+Programming language:
+-Python
+
+Repository:
+-Git
+
+Outline for the code:
+-Server
+-Scalable client
+
+Strategy:
+-Evaluation:
+	-Game works
+-Demonstration:
+	-Playing the game
