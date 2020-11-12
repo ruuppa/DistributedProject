@@ -6,7 +6,7 @@ Multiplayer game project for Distributed Systems -course
 For a base for the game: https://www.youtube.com/watch?v=McoDjOCb2Zo
 
 # Basic concepts etc.
-Multiplayer game, small competetitive
+Multiplayer game, small competetitive, real-time
 * Using pygame as a framework for graphics and for ease of use
 * Using tutorial as a base:
 	https://www.youtube.com/watch?v=McoDjOCb2Zo
