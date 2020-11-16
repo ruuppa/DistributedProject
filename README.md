@@ -33,6 +33,9 @@ Outline for the code:
 
 Strategy:
 * Evaluation:
-	** Game works
+** Game works
 * Demonstration:
-	** Playing the game
+** Playing the game
+
+Documentation:
+* https://docs.google.com/document/d/1ruCcRXmwBzCM8GiibeN3pV-6m48wwiN59-pK31F6s4A/edit?usp=sharing
