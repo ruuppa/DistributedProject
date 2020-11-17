@@ -2,43 +2,44 @@ import socket
 from _thread import *
 import sys
 
-server = "192.168.10.247" #insert server ip address here
-port = 5555 #remember to use a non-used port
+from config import SERVER_PORT, SERVER_ADDRESS
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((server, port))
+    s.bind((SERVER_ADDRESS, SERVER_PORT))
 except socket.error as e:
-    str(e)
+    print("socket error", str(e))
 
 s.listen(3) #3 clients can connect
 print("Waiting for a connection, Server Started")
 
-def threaded_client(conn):
+def threaded_client(conn, addr):
     conn.send(str.encode("Connected"))
     reply = ""
 
     while True:
         try:
             data = conn.recv(2048)
-            reply = data.decode("utf-8")
-
-            if not data:
-                print("Disconnected")
-                break
-            else:
-                print("Received: ", reply)
-                print("Sending : ", reply)
-
-            conn.sendall(str.encode(reply))
-        except:
+        except ConnectionResetError:
+            # This happens when client cuts the connection.
+            print(f"{addr}: connection reset")
             break
 
-    print("Lost connection")
+        reply = data.decode("utf-8")
+
+        if not data:
+            break
+        else:
+            print(f"Received from {addr}:", reply)
+
+        conn.sendall(str.encode(reply))
+
+    print(f"Client {addr} disconnected, terminating connection")
     conn.close()
 
 while True:
     conn, addr = s.accept()
     print("Connected to ", addr)
-    start_new_thread(threaded_client, (conn,))
+    start_new_thread(threaded_client, (conn, addr))
