@@ -24,8 +24,6 @@ Multiplayer game, small competetitive, real-time
 
 * ...
 
-After one user presses S key, the game begins
-
 Name:
 * Dicing Against Death, or DAD (name pending)
 

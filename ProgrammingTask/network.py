@@ -1,3 +1,8 @@
+"""Networking for game clients
+
+Functionality for communicating with the server for clients.
+"""
+
 import socket
 
 from config import SERVER_ADDRESS, SERVER_PORT
