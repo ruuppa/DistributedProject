@@ -2,20 +2,20 @@ import socket
 from _thread import *
 import sys
 
-server = "192.168.10.247" #insert server ip address here
-port = 5555 #remember to use a non-used port
+from config import SERVER_PORT, SERVER_ADDRESS
+
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((server, port))
+    s.bind((SERVER_ADDRESS, SERVER_PORT))
 except socket.error as e:
     str(e)
 
 s.listen(3) #3 clients can connect
 print("Waiting for a connection, Server Started")
 
-def threaded_client(conn):
+def threaded_client(conn, addr):
     conn.send(str.encode("Connected"))
     reply = ""
 
@@ -28,8 +28,7 @@ def threaded_client(conn):
                 print("Disconnected")
                 break
             else:
-                print("Received: ", reply)
-                print("Sending : ", reply)
+                print(f"Received from {addr}:", reply)
 
             conn.sendall(str.encode(reply))
         except:
@@ -41,4 +40,4 @@ def threaded_client(conn):
 while True:
     conn, addr = s.accept()
     print("Connected to ", addr)
-    start_new_thread(threaded_client, (conn,))
+    start_new_thread(threaded_client, (conn, addr))

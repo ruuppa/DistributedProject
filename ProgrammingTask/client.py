@@ -1,5 +1,8 @@
 import pygame
 
+from network import Network
+
+
 width = 500
 height = 500
 win = pygame.display.set_mode((width,height))
@@ -7,15 +10,18 @@ pygame.display.set_caption("Player")
 
 clientNumbet = 0
 
+FPS_LIMIT = 24
+
 class Player():
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, x, y, width, height, color, network):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.color = color
         self.rect = (x, y, width, height)
-        self.vel = 0.3
+        self.vel = 30
+        self.network = network
 
     def draw(self, win):
         pygame.draw.rect(win, self.color, self.rect)
@@ -25,15 +31,19 @@ class Player():
 
         if keys[pygame.K_LEFT]:
             self.x -= self.vel
+            self.network.send("moving left...")
 
         if keys[pygame.K_RIGHT]:
             self.x += self.vel
+            self.network.send("moving right...")
 
         if keys[pygame.K_UP]:
             self.y -= self.vel
+            self.network.send("moving up...")
 
         if keys[pygame.K_DOWN]:
             self.y += self.vel
+            self.network.send("moving down...")
 
         self.rect = (self.x, self.y, self.width, self.height)
 
@@ -44,7 +54,9 @@ def redrawWindow(win, player):
 
 def main():
     run = True
-    p = Player(50,50,100,100,(0,255,0))
+    p = Player(50,50,100,100,(0,255,0), Network())
+
+    clock = pygame.time.Clock()
 
     while run:
         for event in pygame.event.get():
@@ -52,6 +64,7 @@ def main():
                 run = False
                 pygame.quit()
 
+        clock.tick(FPS_LIMIT)  # throttle game to specific framerate
         p.move()
         redrawWindow(win, p)
 
