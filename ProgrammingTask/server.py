@@ -20,7 +20,13 @@ def threaded_client(conn, addr):
     reply = ""
 
     while True:
-        data = conn.recv(2048)
+        try:
+            data = conn.recv(2048)
+        except ConnectionResetError:
+            # This happens when client cuts the connection.
+            print(f"{addr}: connection reset")
+            break
+
         reply = data.decode("utf-8")
 
         if not data:
