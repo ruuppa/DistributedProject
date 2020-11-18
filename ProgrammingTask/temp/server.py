@@ -1,38 +1,38 @@
 import socket
-import pickle
 from _thread import *
-import sys
+import pickle
 from game import Game
-
-from config import SERVER_PORT, SERVER_ADDRESS
+from config import SERVER_ADDRESS, SERVER_PORT
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind((SERVER_ADDRESS, SERVER_PORT))
 except socket.error as e:
-    print("socket error", str(e))
+    str(e)
 
-s.listen(3) #3 clients can connect
+s.listen(3)
 print("Waiting for a connection, Server Started")
 
 connected = set()
 games = {}
 idCount = 0
 
-def threaded_client(conn, addr, gameId):
-    global idCount
-    conn.send(str.encode("Connected"))
-    reply = ""
 
+def threaded_client(conn, p, gameId):
+    global idCount
+    conn.send(str.encode(str(p)))
+
+    reply = ""
     while True:
         try:
-            data = conn.recv(2048)
+            data = conn.recv(4096).decode()
 
             if gameId in games:
                 game = games[gameId]
 
                 if not data:
+                    print("No data.")
                     break
                 else:
                     if data == "reset":
@@ -42,22 +42,13 @@ def threaded_client(conn, addr, gameId):
 
                     conn.sendall(pickle.dumps(game))
             else:
+                print("No gameId in games.")
                 break
-        except ConnectionResetError:
-            # This happens when client cuts the connection.
-            print(f"{addr}: connection reset")
+        except:
+            print("Something went wrong here")
             break
 
-        reply = data.decode("utf-8")
-
-        if not data:
-            break
-        else:
-            print(f"Received from {addr}:", reply)
-
-        conn.sendall(pickle.dumps(game))
-
-    print(f"Client {addr} disconnected, terminating connection")
+    print("Lost connection")
     try:
         del games[gameId]
         print("Closing Game", gameId)
@@ -70,15 +61,22 @@ while True:
     conn, addr = s.accept()
     print("Connected to:", addr)
 
+    # We want to connect to all of the other clients, and no more.
+    # Currently we crash if we try to do more than 3, but that is fine.
     idCount += 1
     p = 0
-    gameId = (idCount - 1)//2
-    if idCount % 2 == 1:
+    gameId = (idCount - 1)//3 # We can use this to get extra games, currently set for 3 players each
+    print("GameID: ",gameId)
+    print("Idcount: ",idCount)
+
+    ## There are smarter ways to make this, but with this, we can have infinite amount of 3 player games going at the same time
+    if (idCount+2) % 3 == 0:
         games[gameId] = Game(gameId)
         print("Creating a new game...")
+    elif (idCount+1) % 3 == 0:
+        p = 1
     else:
         games[gameId].ready = True
-        p = 1
+        p = 2
 
     start_new_thread(threaded_client, (conn, p, gameId))
-
