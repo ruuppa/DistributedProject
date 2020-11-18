@@ -1,5 +1,5 @@
 # Note!
-This is not a merge-candidate, and should only be used for testing the game-logic, rather than the whole package.
+This is not a merge-candidate, and should only be used for testing the game-logic, rather than the whole package. The working code is currently in the "temp" -folder, rather than the main folder.
 Running the game works as per normal:
 1. Run server.py
 1. Run the desired amount of client.py, clicking on the window itself to make them join the server.
