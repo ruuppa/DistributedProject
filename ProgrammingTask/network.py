@@ -11,10 +11,10 @@ from config import SERVER_ADDRESS, SERVER_PORT
 class Network:
     def __init__(self):
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server = "10.11.250.207"
-        self.port = 5555
+        self.server = SERVER_ADDRESS
+        self.port = SERVER_PORT
         self.addr = (self.server, self.port)
-        self.p = self.connect()
+        self.playerId = self.connect()
 
     #def create_connection(self):
     #    print("connecting to server...")
@@ -23,8 +23,8 @@ class Network:
     #    client.connect((SERVER_ADDRESS, SERVER_PORT))
     #    return client
 
-    def getP(self):
-        return self.getP
+    def getPlayerId(self):
+        return self.playerId
 
     def connect(self):
         try:
@@ -35,8 +35,8 @@ class Network:
 
     def send(self, data):
         try:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.send(str.encode(data))
-            return pickle.loads(client.recv(2048*2))
+            print("Sending:", data)
+            self.client.send(str.encode(data))
+            return pickle.loads(self.client.recv(2048*2))
         except socket.error as e:
             print(e)

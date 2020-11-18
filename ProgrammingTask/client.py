@@ -3,14 +3,14 @@ from network import Network
 import pickle
 pygame.font.init()
 
-width = 500
-height = 500
+width = 1000
+height = 700
 win = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Player")
 
 clientNumbet = 0
 
-FPS_LIMIT = 60
+FPS_LIMIT = 2
 
 class Button:
     def __init__(self, text, x, y, color):
@@ -102,7 +102,7 @@ def main():
     run = True
     n = Network()
     
-    p = int(n.getP())
+    p = int(n.getPlayerId())
     print("You are a player: ", p)
 
     clock = pygame.time.Clock()
