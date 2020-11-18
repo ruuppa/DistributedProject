@@ -35,7 +35,7 @@ class Button:
         else:
             return False
 
-def redrawWindow(win, game, p):
+def redrawWindow(win, game, player):
     win.fill((128,128,128))
 
     if not (game.connected):
@@ -47,8 +47,11 @@ def redrawWindow(win, game, p):
         text = font.render("Your Move", 1, (0, 255,255))
         win.blit(text, (80, 200))
 
-        text = font.render("Opponents", 1, (0, 255, 255))
+        text = font.render("Opponent", 1, (150, 0, 150))
         win.blit(text, (380, 200))
+
+        text = font.render("Opponent", 1, (150, 0, 150))
+        win.blit(text, (680, 200))
 
         move1 = game.get_player_move(0)
         move2 = game.get_player_move(1)
@@ -58,32 +61,32 @@ def redrawWindow(win, game, p):
             text2 = font.render(move2, 1, (0, 0, 0))
             text3 = font.render(move3, 1, (0, 0, 0))
         else:
-            if game.p1Went and p == 0:
+            if game.p1Went and player == 0:
                 text1 = font.render(move1, 1, (0,0,0))
             elif game.p1Went:
                 text1 = font.render("Locked In", 1, (0, 0, 0))
             else:
                 text1 = font.render("Waiting...", 1, (0, 0, 0))
-
-            if game.p2Went and p == 1:
+            
+            if game.p2Went and player == 1:
                 text2 = font.render(move2, 1, (0,0,0))
             elif game.p2Went:
                 text2 = font.render("Locked In", 1, (0, 0, 0))
             else:
                 text2 = font.render("Waiting...", 1, (0, 0, 0))
 
-            if game.p3Went and p == 2:
+            if game.p3Went and player == 2:
                 text3 = font.render(move3, 1, (0,0,0))
             elif game.p3Went:
                 text3 = font.render("Locked In", 1, (0, 0, 0))
             else:
                 text3 = font.render("Waiting...", 1, (0, 0, 0))
 
-        if p == 0:
+        if player == 0:
             win.blit(text1, (100, 350))
             win.blit(text2, (400, 350))
             win.blit(text3, (700, 350))
-        elif p == 1:
+        elif player == 1:
             win.blit(text2, (100, 350))
             win.blit(text1, (400, 350))
             win.blit(text3, (700, 350))
@@ -97,13 +100,13 @@ def redrawWindow(win, game, p):
 
     pygame.display.update()
 
-btns = [Button("Rock", 50, 500, (0,0,0)), Button("Scissors", 250, 500, (255,0,0)), Button("Paper", 450, 500, (0,255,0))]
+btns = [Button("Rock", 200, 500, (0,0,0)), Button("Scissors", 400, 500, (255,0,0)), Button("Paper", 600, 500, (0,255,0))]
 def main():
     run = True
     n = Network()
     
-    p = int(n.getPlayerId())
-    print("You are a player: ", p)
+    player = int(n.getPlayerId())
+    print("You are a player: ", player)
 
     clock = pygame.time.Clock()
 
@@ -118,7 +121,7 @@ def main():
             break
 
         if game.allWent():
-            redrawWindow(win, game, p)
+            redrawWindow(win, game, player)
             pygame.time.delay(500)
             try:
                 game = n.send("reset")
@@ -133,12 +136,12 @@ def main():
             # p3 Win: [0, 0, 0, 1]
 
             font = pygame.font.SysFont("comicsans", 90)
-            if (game.winner() == [0, 1, 0, 0] and p == 0) or (game.winner() == [0, 0, 1, 0] and p == 1) or (game.winner() == [0,0,0,1] and p == 2):
+            if (game.winner() == [0, 1, 0, 0] and player == 0) or (game.winner() == [0, 0, 1, 0] and player == 1) or (game.winner() == [0,0,0,1] and player == 2) or (game.winner() == [0, 1, 1, 0] and (player == 0 or player == 1)) or (game.winner() == [0, 1, 0, 1] and (player == 0 or player == 2)) or (game.winner() == [0, 0, 1, 1] and (player == 1 or player == 2)):
                 text = font.render("You Won!", 1, (255,0,0))
             elif game.winner() == [1, 0, 0, 0]:
                 text = font.render("Tie Game!", 1, (255,0,0))
             else:
-                text = font.render("You Lost... or there were multiple winners!", 1, (255, 0, 0))
+                text = font.render("You Lost...", 1, (255, 0, 0))
 
             win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2))
             pygame.display.update()
@@ -153,17 +156,17 @@ def main():
                 pos = pygame.mouse.get_pos()
                 for btn in btns:
                     if btn.click(pos) and game.connected():
-                        if p == 0:
+                        if player == 0:
                             if not game.p1Went:
                                 n.send(btn.text)
-                        elif p == 1:
+                        elif player == 1:
                             if not game.p2Went:
                                 n.send(btn.text)
                         else:
                             if not game.p3Went:
                                 n.send(btn.text)
 
-        redrawWindow(win, game, p)
+        redrawWindow(win, game, player)
 
 def menu_screen():
     run = True

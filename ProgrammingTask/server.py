@@ -32,6 +32,7 @@ def threaded_client(conn, playerId, gameId):
                 game = games[gameId]
 
                 if not data:
+                    print("No data.")
                     break
                 else:
                     if data == "reset":
@@ -49,14 +50,7 @@ def threaded_client(conn, playerId, gameId):
             print(f"{playerId}: connection reset")
             break
 
-        if not data:
-            print("Got no data!")
-            break
-        else:
-            #print(f"Received from {playerId}:", data)
-            pass
-
-        conn.sendall(pickle.dumps(game))
+        #conn.sendall(pickle.dumps(game))
 
     print(f"Client {playerId} disconnected, terminating connection")
     try:
