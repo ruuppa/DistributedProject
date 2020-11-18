@@ -10,7 +10,7 @@ pygame.display.set_caption("Player")
 
 clientNumbet = 0
 
-FPS_LIMIT = 2
+FPS_LIMIT = 60
 
 class Button:
     def __init__(self, text, x, y, color):
