@@ -52,11 +52,20 @@ def redrawWindow(win, player):
     player.draw(win)
     pygame.display.update()
 
+def read_pos(str): # what is the position of player, reads the pos
+    str = str.split(",")
+    return int(str[0], int(str[1]))
+
+def make_pos(tup):# this is making pos
+    return str(tup[0]) + "," + str(tup[1])
+
+
+
 def main():
     run = True
-    networking = Network()
+    networking = Network() # Connect to the server
 
-    p = Player(50,50,100,100,(0,255,0), networking.create_connection())
+    p = Player(50,50,100,100,(0,255,0), networking.create_connection()) # this is the starting point
 
     clock = pygame.time.Clock()
 

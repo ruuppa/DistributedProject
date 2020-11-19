@@ -21,9 +21,8 @@ class Network:
         #print(self.id) # when connected this print id, only test purpose
         self.pos = self.create_connection()
 
-    def getPos(self): #client is using this, returns connection
+    def getPos(self): #client is using this
         return self.pos
-
 
 
 
