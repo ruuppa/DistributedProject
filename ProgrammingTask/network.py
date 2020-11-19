@@ -18,7 +18,13 @@ class Network:
         self.port = 5555 
         self.addr = (self.server, self.port) #address
         self.id = self.create_connection() #player id, this is needes when there is multiple players
-        print(self.id) # when connected this print id
+        #print(self.id) # when connected this print id, only test purpose
+        self.pos = self.create_connection()
+
+    def getPos(self): #client is using this, returns connection
+        return self.pos
+
+
 
 
 
@@ -39,8 +45,8 @@ class Network:
             print(error_message)
 
 
-n = Network()
-print(n.send("hello"))
+#n = Network()
+#print(n.send("hello"))#testing that connection is working
 
         
      #   print("connecting to server...")
