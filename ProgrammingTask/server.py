@@ -2,13 +2,16 @@ import socket
 from _thread import *
 import sys
 
-from config import SERVER_PORT, SERVER_ADDRESS
+#from config import SERVER_PORT, SERVER_ADDRESS
+server = "localhost"
+port = 5555
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    s.bind((SERVER_ADDRESS, SERVER_PORT))
+    s.bind((server, port))
+
 except socket.error as e:
     print("socket error", str(e))
 
@@ -40,6 +43,7 @@ def threaded_client(conn, addr):
     conn.close()
 
 while True:
+    #print("test")
     conn, addr = s.accept()
     print("Connected to ", addr)
     start_new_thread(threaded_client, (conn, addr))
