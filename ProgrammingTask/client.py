@@ -8,8 +8,6 @@ height = 700
 win = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Player")
 
-clientNumbet = 0
-
 FPS_LIMIT = 60
 
 class Button:

@@ -10,7 +10,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
     s.bind((SERVER_ADDRESS, SERVER_PORT))
-except socket.error as e:
+except OSError as e:
     print("socket error", str(e))
 
 s.listen(3) #3 clients can connect
@@ -49,15 +49,16 @@ def threaded_client(conn, playerId, gameId):
             # This happens when client cuts the connection.
             print(f"{playerId}: connection reset")
             break
-
-        #conn.sendall(pickle.dumps(game))
+        except InterruptedError as e:
+            print(e)
+            break
 
     print(f"Client {playerId} disconnected, terminating connection")
     try:
         del games[gameId]
         print("Closing Game", gameId)
-    except:
-        pass
+    except NameError as e:
+        print(e)
     idCount -= 1
     conn.close()
 

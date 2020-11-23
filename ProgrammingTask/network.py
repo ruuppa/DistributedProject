@@ -23,12 +23,12 @@ class Network:
         try:
             self.client.connect(self.addr)
             return self.client.recv(2048).decode()
-        except:
-            pass
+        except InterruptedError as e:
+            print(e)
 
     def send(self, data):
         try:
             self.client.send(str.encode(data))
             return pickle.loads(self.client.recv(2048*2))
-        except socket.error as e:
+        except (OSError, pickle.UnpicklingError) as e:
             print(e)
