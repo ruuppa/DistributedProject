@@ -57,3 +57,10 @@ Strategy:
 
 More documentation:
 * https://docs.google.com/document/d/1ruCcRXmwBzCM8GiibeN3pV-6m48wwiN59-pK31F6s4A/edit?usp=sharing
+
+Report template
+https://docs.google.com/document/d/1y834_YtiFoU9ANbX1mYMj599WO6jxnhL-ABoF_Ki6Ls/edit?usp=sharing
+
+
+
+
