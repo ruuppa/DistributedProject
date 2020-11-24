@@ -65,7 +65,7 @@ def redrawWindow(win, game, player):
                 text1 = font.render("Locked In", 1, (0, 0, 0))
             else:
                 text1 = font.render("Waiting...", 1, (0, 0, 0))
-            
+
             if game.p2Went and player == 1:
                 text2 = font.render(move2, 1, (0,0,0))
             elif game.p2Went:
@@ -99,10 +99,12 @@ def redrawWindow(win, game, player):
     pygame.display.update()
 
 btns = [Button("Rock", 200, 500, (0,0,0)), Button("Scissors", 400, 500, (255,0,0)), Button("Paper", 600, 500, (0,255,0))]
+
+
 def main():
     run = True
     n = Network()
-    
+
     player = int(n.getPlayerId())
     print("You are a player: ", player)
 
@@ -134,14 +136,10 @@ def main():
             # p3 Win: [0, 0, 0, 1]
 
             font = pygame.font.SysFont("comicsans", 90)
-            if (game.winner() == [0, 1, 0, 0] and player == 0) or (game.winner() == [0, 0, 1, 0] and player == 1) or (game.winner() == [0,0,0,1] and player == 2) or (game.winner() == [0, 1, 1, 0] and (player == 0 or player == 1)) or (game.winner() == [0, 1, 0, 1] and (player == 0 or player == 2)) or (game.winner() == [0, 0, 1, 1] and (player == 1 or player == 2)):
-                text = font.render("You Won!", 1, (255,0,0))
-            elif game.winner() == [1, 0, 0, 0]:
-                text = font.render("Tie Game!", 1, (255,0,0))
-            else:
-                text = font.render("You Lost...", 1, (255, 0, 0))
+            outcome_text = game.outcome_for_player(player)
+            outcome_font = font.render(outcome_text, 1, (255,0,0))
 
-            win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2))
+            win.blit(outcome_font, (width/2 - outcome_font.get_width()/2, height/2 - outcome_font.get_height()/2))
             pygame.display.update()
             pygame.time.delay(2000)
 
