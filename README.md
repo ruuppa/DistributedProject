@@ -50,4 +50,4 @@ Strategy:
 ** Playing the game
 
 More documentation:
-* https://docs.google.com/document/d/1ruCcRXmwBzCM8GiibeN3pV-6m48wwiN59-pK31F6s4A/edit?usp=sharing
+* Pinned in telegram
