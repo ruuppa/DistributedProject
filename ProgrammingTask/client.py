@@ -5,6 +5,7 @@ from datetime import datetime
 import pygame
 
 from network import Network
+from config import LOG_LEVEL
 
 pygame.font.init()
 width = 1000
@@ -14,7 +15,7 @@ pygame.display.set_caption("Player")
 
 FPS_LIMIT = 60
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 

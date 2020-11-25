@@ -6,10 +6,10 @@ from datetime import datetime
 import logging
 
 from game import Game
-from config import SERVER_PORT, SERVER_ADDRESS
+from config import SERVER_PORT, SERVER_ADDRESS, LOG_LEVEL
 
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
