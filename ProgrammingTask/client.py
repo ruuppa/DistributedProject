@@ -199,5 +199,7 @@ def menu_screen():
 
     main()
 
-while True:
-    menu_screen()
+
+if __name__ == '__main__':
+    while True:
+        menu_screen()
