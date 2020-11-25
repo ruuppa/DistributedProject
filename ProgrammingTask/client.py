@@ -1,14 +1,22 @@
-import pygame
-from network import Network
 import pickle
-pygame.font.init()
+import logging
+from datetime import datetime
 
+import pygame
+
+from network import Network
+
+pygame.font.init()
 width = 1000
 height = 700
 win = pygame.display.set_mode((width,height))
 pygame.display.set_caption("Player")
 
 FPS_LIMIT = 60
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 class Button:
     def __init__(self, text, x, y, color):
@@ -106,7 +114,7 @@ def main():
     n = Network()
 
     player = int(n.getPlayerId())
-    print("You are a player: ", player)
+    logger.info(f"You are a player: {player}")
 
     clock = pygame.time.Clock()
 
@@ -117,7 +125,7 @@ def main():
             game = n.send("get")
         except:
             run = False
-            print("No game detected")
+            logger.warning("No game detected")
             break
 
         if game.allWent():
@@ -127,7 +135,7 @@ def main():
                 game = n.send("reset")
             except:
                 run = False
-                print("Couldn't get game")
+                logger.warning("Couldn't get game")
                 break
 
             # tie:    [1, 0, 0, 0]
@@ -136,7 +144,12 @@ def main():
             # p3 Win: [0, 0, 0, 1]
 
             font = pygame.font.SysFont("comicsans", 90)
+            benchmark_start = datetime.now()
             outcome_text = game.outcome_for_player(player)
+            benchmark_duration = datetime.now() - benchmark_start
+            microseconds = benchmark_duration.microseconds
+
+            logger.info(f'calculated player outcome in {microseconds} us')
             outcome_font = font.render(outcome_text, 1, (255,0,0))
 
             win.blit(outcome_font, (width/2 - outcome_font.get_width()/2, height/2 - outcome_font.get_height()/2))

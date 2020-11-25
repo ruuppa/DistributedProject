@@ -5,7 +5,11 @@ Functionality for creating socket connections for clients.
 
 import socket
 import pickle
+import logging
+
 from config import SERVER_ADDRESS, SERVER_PORT
+
+logger = logging.getLogger(__name__)
 
 
 class Network:
@@ -23,12 +27,12 @@ class Network:
         try:
             self.client.connect(self.addr)
             return self.client.recv(2048).decode()
-        except InterruptedError as e:
-            print(e)
+        except InterruptedError:
+            logger.exception('error connecting the client')
 
     def send(self, data):
         try:
             self.client.send(str.encode(data))
             return pickle.loads(self.client.recv(2048*2))
-        except (OSError, pickle.UnpicklingError) as e:
-            print(e)
+        except (OSError, pickle.UnpicklingError):
+            logger.exception('error sending data')
