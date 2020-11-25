@@ -14,12 +14,8 @@ logger = logging.getLogger(__name__)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-try:
-    s.bind((SERVER_ADDRESS, SERVER_PORT))
-except OSError as e:
-    logger.exception("socket error")
-
-s.listen(3) #3 clients can connect
+s.bind((SERVER_ADDRESS, SERVER_PORT))
+s.listen(3) # 3 clients can connect
 logger.info("Waiting for a connection, Server Started")
 
 connected = set()
@@ -54,7 +50,7 @@ def threaded_client(conn, playerId, gameId):
 
                     conn.sendall(pickle.dumps(game))
             else:
-                logger.warning("Invalid game id: {gameId}, list of games: {games}")
+                logger.info(f"{gameId} is missing, exiting game...")
                 break
         except ConnectionResetError:
             # This happens when client cuts the connection.
@@ -65,14 +61,16 @@ def threaded_client(conn, playerId, gameId):
             break
 
     logger.info(f"Client {playerId} disconnected, terminating connection")
-    try:
+
+    if gameId in games:
         del games[gameId]
-        logger.info(f"Closing Game {gameId}")
-    except NameError:
-        logger.exception('error closing game')
+        logger.info(f'deleted game {gameId}')
+    else:
+        logger.info(f"didn't terminate game {gameId} because it was already deleted")
 
     idCount -= 1
     conn.close()
+
 
 while True:
     conn, addr = s.accept()
