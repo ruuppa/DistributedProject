@@ -2,83 +2,100 @@ import socket
 import pickle
 from _thread import start_new_thread
 import sys
+from datetime import datetime
+import logging
+
 from game import Game
+from config import SERVER_PORT, SERVER_ADDRESS, LOG_LEVEL
 
-from config import SERVER_PORT, SERVER_ADDRESS
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+logging.basicConfig(level=LOG_LEVEL)
+logger = logging.getLogger(__name__)
 
-try:
-    s.bind((SERVER_ADDRESS, SERVER_PORT))
-except OSError as e:
-    print("socket error", str(e))
 
-s.listen(3) #3 clients can connect
-print("Waiting for a connection, Server Started")
+class RPSServer:
+    def __init__(self):
+        self.games = {}
+        self.idCount = 0
 
-connected = set()
-games = {}
-idCount = 0
+    def player_client(self, conn, playerId, gameId):
+        conn.send(str.encode(str(playerId)))
 
-def threaded_client(conn, playerId, gameId):
-    global idCount
-    conn.send(str.encode(str(playerId)))
+        while True:
+            try:
+                data = conn.recv(2048*2).decode('utf-8')
 
-    while True:
-        try:
-            data = conn.recv(2048*2).decode('utf-8')
+                if gameId in self.games:
+                    game = self.games[gameId]
 
-            if gameId in games:
-                game = games[gameId]
+                    if not data:
+                        logger.warning("No data.")
+                        break
+                    else:
+                        if data == "reset":
+                            game.resetWent()
+                        elif data != "get":
+                            logger.info(f"Got a play: {playerId} {data}")
+                            benchmark_start = datetime.now()
+                            game.play(playerId, data)
 
-                if not data:
-                    print("No data.")
-                    break
+                            elapsed = datetime.now() - benchmark_start
+
+                            logger.info(f'calculated next game state in {elapsed.microseconds} us')
+
+                        conn.sendall(pickle.dumps(game))
                 else:
-                    if data == "reset":
-                        game.resetWent()
-                    elif data != "get":
-                        print("Got a play:", playerId, data)
-                        game.play(playerId, data)
-
-                    conn.sendall(pickle.dumps(game))
-            else:
-                print("Invalid game id", gameId, ", list of games:", games)
+                    logger.info(f"{gameId} is missing, exiting game...")
+                    break
+            except ConnectionResetError:
+                # This happens when client cuts the connection.
+                logger.warning(f"{playerId}: connection reset")
                 break
-        except ConnectionResetError:
-            # This happens when client cuts the connection.
-            print(f"{playerId}: connection reset")
-            break
-        except InterruptedError as e:
-            print(e)
-            break
+            except InterruptedError as e:
+                logger.warning(e)
+                break
 
-    print(f"Client {playerId} disconnected, terminating connection")
-    try:
-        del games[gameId]
-        print("Closing Game", gameId)
-    except NameError as e:
-        print(e)
-    idCount -= 1
-    conn.close()
+        logger.info(f"Client {playerId} disconnected, terminating connection")
 
-while True:
-    conn, addr = s.accept()
-    print("Connected to:", addr)
+        if gameId in self.games:
+            del self.games[gameId]
+            logger.info(f'deleted game {gameId}')
+        else:
+            logger.info(f"didn't terminate game {gameId} because it was already deleted")
 
-    idCount += 1
-    p = 0
-    gameId = (idCount - 1)//3
-    if idCount % 3 == 1:
-        games[gameId] = Game(gameId)
-        print("Creating a new game...")
-    elif idCount % 3 == 2:
-        print("Player 2 connected")
-        p = 1
-    elif idCount % 3 == 0:
-        print("Player 3 connected, starting game")
-        games[gameId].ready = True
-        p = 2
+        self.idCount -= 1
+        conn.close()
 
-    start_new_thread(threaded_client, (conn, p, gameId))
+    def run(self):
+        logger.info("Waiting for a connection, Server Started")
 
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        s.bind((SERVER_ADDRESS, SERVER_PORT))
+        s.listen(3)  # 3 clients can connect
+
+        while True:
+            conn, addr = s.accept()
+            logger.info(f"Connected to: {addr}")
+
+            self.idCount += 1
+            p = 0
+            gameId = (self.idCount - 1)//3
+            if self.idCount % 3 == 1:
+                self.games[gameId] = Game(gameId)
+                logger.info("Creating a new game...")
+            elif self.idCount % 3 == 2:
+                logger.info("Player 2 connected")
+                p = 1
+            elif self.idCount % 3 == 0:
+                logger.info("Player 3 connected, starting game")
+                self.games[gameId].ready = True
+                p = 2
+
+            start_new_thread(self.player_client, (conn, p, gameId))
+
+
+if __name__ == '__main__':
+    server = RPSServer()
+
+    server.run()

@@ -30,6 +30,21 @@ class Game:
     def allWent(self):
         return self.p1Went and self.p2Went and self.p3Went
 
+    def outcome_for_player(self, player):
+        if (
+            (self.winner() == [0, 1, 0, 0] and player == 0)
+            or (self.winner() == [0, 0, 1, 0] and player == 1)
+            or (self.winner() == [0, 0, 0, 1] and player == 2)
+            or (self.winner() == [0, 1, 1, 0] and (player == 0 or player == 1))
+            or (self.winner() == [0, 1, 0, 1] and (player == 0 or player == 2))
+            or (self.winner() == [0, 0, 1, 1] and (player == 1 or player == 2))
+        ):
+            return "You Won!"
+        elif self.winner() == [1, 0, 0, 0]:
+            return "Tie Game!"
+        else:
+            return "You Lost..."
+
     def winner(self):
         p1 = self.moves[0].upper()[0] # Win: [0, 1, 0, 0]
         p2 = self.moves[1].upper()[0] # Win: [0, 0, 1, 0]

@@ -2,6 +2,8 @@
 
 Provide common configuration point between game modules and remove duplication.
 """
+import logging
 
-SERVER_ADDRESS = "51.195.91.234"
+SERVER_ADDRESS = "localhost"
 SERVER_PORT = 5555
+LOG_LEVEL = logging.INFO
