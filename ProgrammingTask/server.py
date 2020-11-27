@@ -8,10 +8,8 @@ import logging
 from game import Game
 from config import SERVER_PORT, SERVER_ADDRESS, LOG_LEVEL
 
-
 logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
-
 
 class RPSServer:
     def __init__(self):
@@ -93,7 +91,6 @@ class RPSServer:
                 p = 2
 
             start_new_thread(self.player_client, (conn, p, gameId))
-
 
 if __name__ == '__main__':
     server = RPSServer()

@@ -18,7 +18,6 @@ FPS_LIMIT = 60
 logging.basicConfig(level=LOG_LEVEL)
 logger = logging.getLogger(__name__)
 
-
 class Button:
     def __init__(self, text, x, y, color):
         self.text = text
@@ -139,11 +138,6 @@ def main():
                 logger.warning("Couldn't get game")
                 break
 
-            # tie:    [1, 0, 0, 0]
-            # p1 Win: [0, 1, 0, 0]
-            # p2 Win: [0, 0, 1, 0]
-            # p3 Win: [0, 0, 0, 1]
-
             font = pygame.font.SysFont("comicsans", 90)
             benchmark_start = datetime.now()
             outcome_text = game.outcome_for_player(player)
@@ -198,7 +192,6 @@ def menu_screen():
                 run = False
 
     main()
-
 
 if __name__ == '__main__':
     while True:
