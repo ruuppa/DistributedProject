@@ -41,7 +41,7 @@ class Button:
         else:
             return False
 
-def redrawWindow(win, game, player):
+def redrawWindow(win, game, player, microseconds):
     win.fill((128,128,128))
 
     if not (game.connected):
@@ -50,6 +50,10 @@ def redrawWindow(win, game, player):
         win.blit(text, (width/2 - text.get_width()/2, height/2 - text.get_height()/2))
     else:
         font = pygame.font.SysFont("comicsans", 60)
+
+        ping = font.render(str(int(microseconds)), 1, (255,255,255))
+        win.blit(ping, (680, 50))
+
         text = font.render("Your Move", 1, (0, 255,255))
         win.blit(text, (80, 200))
 
@@ -118,6 +122,8 @@ def main():
 
     clock = pygame.time.Clock()
 
+    microseconds = 0
+
     while run:
         clock.tick(FPS_LIMIT)  # throttle game to specific framerate
 
@@ -129,7 +135,7 @@ def main():
             break
 
         if game.allWent():
-            redrawWindow(win, game, player)
+            redrawWindow(win, game, player, microseconds)
             pygame.time.delay(500)
             try:
                 game = n.send("reset")
@@ -170,7 +176,7 @@ def main():
                             if not game.p3Went:
                                 n.send(btn.text)
 
-        redrawWindow(win, game, player)
+        redrawWindow(win, game, player, microseconds)
 
 def menu_screen():
     run = True
