@@ -81,12 +81,12 @@ class RPSServer:
             gameId = (self.idCount - 1)//3
             if self.idCount % 3 == 1:
                 self.games[gameId] = Game(gameId)
-                logger.info("Creating a new game...")
+                logger.info("Creating a new game... Player 0 connected")
             elif self.idCount % 3 == 2:
-                logger.info("Player 2 connected")
+                logger.info("Player 1 connected")
                 p = 1
             elif self.idCount % 3 == 0:
-                logger.info("Player 3 connected, starting game")
+                logger.info("Player 2 connected, starting game")
                 self.games[gameId].ready = True
                 p = 2
 
