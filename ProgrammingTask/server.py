@@ -71,7 +71,13 @@ class RPSServer:
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        s.bind((SERVER_ADDRESS, SERVER_PORT))
+        # See https://stackoverflow.com/a/6380198
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+
+        # Hardcode 0.0.0.0 as address, since we should be using that for all
+        # use cases.
+        s.bind(("0.0.0.0", SERVER_PORT))
+
         s.listen(3)  # 3 clients can connect
 
         while True:
