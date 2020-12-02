@@ -46,13 +46,16 @@ class Game:
             return "You Lost..."
 
     def winner(self):
-        p1 = self.moves[0].upper()[0] # Win: [0, 1, 0, 0]
-        p2 = self.moves[1].upper()[0] # Win: [0, 0, 1, 0]
-        p3 = self.moves[2].upper()[0] # Win: [0, 0, 0, 1]
+        p1 = self.moves[0].upper()[0]
+        p2 = self.moves[1].upper()[0]
+        p3 = self.moves[2].upper()[0]
 
         tie = [1, 0, 0, 0]
-        # It gets completely impossible to make this calculation with if-else hell on more than 3 players. 3^3 = 27 etc. etc.
-        # So a better way needs to be found
+
+        # tie:    [1, 0, 0, 0]
+        # p1 Win: [0, 1, 0, 0]
+        # p2 Win: [0, 0, 1, 0]
+        # p3 Win: [0, 0, 0, 1]
 
         # Tie
         if p1 == p2 == p3:
