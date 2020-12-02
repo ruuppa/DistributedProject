@@ -23,7 +23,13 @@ class RPSServer:
 
         while True:
             try:
-                data = conn.recv(2048*2).decode('utf-8')
+                raw_bytes = conn.recv(2048*2)
+
+                try:
+                    data = raw_bytes.decode('utf-8')
+                except UnicodeDecodeError:
+                    logger.exception(f'received undecodable bytes: {raw_bytes}')
+                    continue
 
                 if gameId in self.games:
                     game = self.games[gameId]
