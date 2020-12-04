@@ -97,10 +97,12 @@ class RPSServer:
             elif self.idCount % 3 == 2:
                 logger.info("Player 1 connected")
                 p = 1
+                self.games[gameId].playerJoined(1)
             elif self.idCount % 3 == 0:
                 logger.info("Player 2 connected, starting game")
                 self.games[gameId].ready = True
                 p = 2
+                self.games[gameId].playerJoined(2)
 
             start_new_thread(self.player_client, (conn, p, gameId))
 

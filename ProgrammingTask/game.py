@@ -9,6 +9,9 @@ class Game:
         self.wins = [0,0,0]
         self.ties = 0
 
+        self.p2HasJoined = False
+        self.p3HasJoined = False
+
         #For future:
         self.playersWent = []
 
@@ -29,6 +32,18 @@ class Game:
 
     def allWent(self):
         return self.p1Went and self.p2Went and self.p3Went
+
+    def playerJoined(self, sendto):
+        if sendto == 1:
+            self.p2HasJoined = True
+        elif sendto == 2:
+            self.p3HasJoined = True
+
+    def p2Joined(self):
+        return self.p2HasJoined
+
+    def p3Joined(self):
+        return self.p3HasJoined
 
     def outcome_for_player(self, player):
         if (

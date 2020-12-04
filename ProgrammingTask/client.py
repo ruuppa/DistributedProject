@@ -124,6 +124,9 @@ def main():
 
     microseconds = 0
 
+    p2HasJoinedFlag = False
+    p3HasJoinedFlag = False
+
     while run:
         clock.tick(FPS_LIMIT)  # throttle game to specific framerate
 
@@ -133,6 +136,13 @@ def main():
             run = False
             logger.warning("No game detected")
             break
+
+        if game.p2Joined() == True and p2HasJoinedFlag == False:
+            logger.info(f"Player 1 has joined")
+            p2HasJoinedFlag = True
+        if game.p3Joined() == True and p3HasJoinedFlag == False:
+            logger.info(f"Player 2 has joined")
+            p3HasJoinedFlag = True
 
         if game.allWent():
             redrawWindow(win, game, player, microseconds)
