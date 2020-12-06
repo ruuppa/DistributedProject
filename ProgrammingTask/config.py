@@ -7,3 +7,5 @@ import logging
 SERVER_ADDRESS = "localhost"
 SERVER_PORT = 5555
 LOG_LEVEL = logging.INFO
+
+
