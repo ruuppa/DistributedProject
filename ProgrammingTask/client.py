@@ -41,7 +41,7 @@ class Button:
         else:
             return False
 
-def redrawWindow(win, game, player, microseconds):
+def redrawWindow(win, game, player, ping):
     win.fill((128,128,128))
 
     if not (game.connected):
@@ -51,7 +51,7 @@ def redrawWindow(win, game, player, microseconds):
     else:
         font = pygame.font.SysFont("comicsans", 60)
 
-        ping = font.render(str(int(microseconds)), 1, (255,255,255))
+        ping = font.render(f"Ping: {ping}", 1, (255,255,255))
         win.blit(ping, (680, 50))
 
         text = font.render("Your Move", 1, (0, 255,255))
@@ -122,10 +122,9 @@ def main():
 
     clock = pygame.time.Clock()
 
-    microseconds = 0
-
     p2HasJoinedFlag = False
     p3HasJoinedFlag = False
+    ping = "..."
 
     while run:
         clock.tick(FPS_LIMIT)  # throttle game to specific framerate
@@ -137,6 +136,10 @@ def main():
             logger.warning("No game detected")
             break
 
+        pingResult = n.ping()
+        if pingResult != None:
+            ping = pingResult
+
         if game.p2Joined() == True and p2HasJoinedFlag == False:
             logger.info(f"Player 1 has joined")
             p2HasJoinedFlag = True
@@ -145,7 +148,7 @@ def main():
             p3HasJoinedFlag = True
 
         if game.allWent():
-            redrawWindow(win, game, player, microseconds)
+            redrawWindow(win, game, player, ping)
             pygame.time.delay(500)
             try:
                 game = n.send("reset")
@@ -186,7 +189,7 @@ def main():
                             if not game.p3Went:
                                 n.send(btn.text)
 
-        redrawWindow(win, game, player, microseconds)
+        redrawWindow(win, game, player, ping)
 
 def menu_screen():
     run = True
