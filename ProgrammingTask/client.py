@@ -51,7 +51,7 @@ def redrawWindow(win, game, player, ping):
     else:
         font = pygame.font.SysFont("comicsans", 60)
 
-        ping = font.render(f"Ping: {ping}", 1, (255,255,255))
+        ping = font.render(f"Ping: {ping} ms", 1, (255,255,255))
         win.blit(ping, (680, 50))
 
         text = font.render("Your Move", 1, (0, 255,255))
