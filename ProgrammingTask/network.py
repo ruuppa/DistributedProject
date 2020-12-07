@@ -6,6 +6,7 @@ Functionality for creating socket connections for clients.
 import socket
 import pickle
 import logging
+from datetime import datetime
 
 from config import SERVER_ADDRESS, SERVER_PORT
 
@@ -19,6 +20,7 @@ class Network:
         self.port = SERVER_PORT
         self.addr = (self.server, self.port)
         self.playerId = self.connect()
+        self.lastPingTime = datetime.utcnow()
 
     def getPlayerId(self):
         return self.playerId
@@ -36,3 +38,12 @@ class Network:
             return pickle.loads(self.client.recv(2048*2))
         except (OSError, pickle.UnpicklingError):
             logger.exception('error sending data')
+
+    def ping(self):
+        timePassed = datetime.utcnow() - self.lastPingTime
+        if timePassed.microseconds >= 500000: # Pings every 0.5 seconds
+            self.lastPingTime = datetime.utcnow()
+            self.send('get')
+            ping = datetime.utcnow() - self.lastPingTime
+            return ping.microseconds // 1000 # Returns milliseconds
+        return None
